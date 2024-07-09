@@ -63,6 +63,7 @@ spec:
               fi
           }
 
+          sleep 15
           route=$(oc get routes | tail -n+2 | awk '{print "http://" $2}')
           web_server &
           while true; do

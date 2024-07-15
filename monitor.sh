@@ -9,8 +9,9 @@ while true; do
     oc get nodes
     oc get pods -o wide
     oc get pods -n openshift-ovn-kubernetes -o wide
-    oc get pods -o name | while read p; do
-        echo === $p ===
-        oc logs $p | grep lost | tail -n 10
+    for p in $(oc get pods -o name); do
+        bash -c "oc logs $p | grep lost | tail -10 | while read l; do echo \"$p: \$l\"; done" &
+        read -t 0.1
     done
+    wait
  done

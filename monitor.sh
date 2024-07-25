@@ -45,6 +45,7 @@ while true; do
     date
     echo ====================
     oc get clusterversion
+    oc get co | grep -E "PROGRESSING|network"
     oc get nodes
     oc get pods -o wide
     oc get pods -n openshift-ovn-kubernetes -o wide

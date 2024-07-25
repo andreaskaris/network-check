@@ -20,7 +20,7 @@
 ovnk_inspect() {
     mkdir -p ovnk-inspects
     while true; do
-        oc adm inspect ns/openshift-ovn-kubernetes --dest-dir=ovnk-inspects/$(date +%Y%m%d%H%M) --since=3m
+        oc adm inspect ns/openshift-ovn-kubernetes --dest-dir=ovnk-inspects/$(date +%Y%m%d%H%M) --since=5m
         sleep 120
     done
 }

@@ -37,9 +37,31 @@ oc expose svc network-check
 
 sleep 60
 
+# Force single-zone
+# cat <<'EOF' | oc apply -f -
+# apiVersion: v1
+# data:
+#   zone-mode: singlezone
+# kind: ConfigMap
+# metadata:
+#   name: ovn-interconnect-configuration
+#   namespace: openshift-ovn-kubernetes
+# EOF
+# Force single-zone
+# cat <<'EOF' | oc apply -f -
+# apiVersion: v1
+# data:
+#   fast-forward-to-multizone: "true"
+# kind: ConfigMap
+# metadata:
+#   name: ovn-interconnect-configuration
+#   namespace: openshift-ovn-kubernetes
+# EOF
+
 oc patch mcp/worker --type merge --patch '{"spec":{"paused":true}}'
 oc adm upgrade channel stable-4.14
 sleep 5
-oc adm upgrade --to-latest=true
+# oc adm upgrade --to-latest=true
+oc adm upgrade --to=4.14.31
 sleep 5
 oc -n openshift-config patch cm admin-acks --patch '{"data":{"ack-4.13-kube-1.27-api-removals-in-4.14":"true"}}' --type=merge

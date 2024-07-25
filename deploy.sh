@@ -2,6 +2,7 @@
 
 set -eux
 
+# Increase log level and convert to routingViaHost: true
 cm_file=$(mktemp)
 cat <<EOF > $cm_file
 kind: ConfigMap
@@ -28,6 +29,11 @@ sleep 120
 oc rollout status daemonset -n openshift-ovn-kubernetes ovnkube-node
 oc rollout status daemonset -n openshift-ovn-kubernetes ovnkube-master
 
+# Scale nodes to 50
+for ms in $(oc get machineset -n openshift-machine-api -o name); do oc scale $ms -n openshift-machine-api --replicas=50; done
+for ms in $(oc get machineset -n openshift-machine-api -o name); do echo "Waiting for $ms"; oc wait $ms --timeout=20m --for=jsonpath='{.status.readyReplicas}'=50 -n openshift-machine-api; done
+
+# Start monitoring
 oc new-project network-check
 oc create serviceaccount network-check
 oc adm policy add-scc-to-user privileged -z network-check
@@ -58,10 +64,12 @@ sleep 60
 #   namespace: openshift-ovn-kubernetes
 # EOF
 
+# Start upgrade
 oc patch mcp/worker --type merge --patch '{"spec":{"paused":true}}'
 oc adm upgrade channel stable-4.14
 sleep 5
 # oc adm upgrade --to-latest=true
-oc adm upgrade --to=4.14.31
+# oc adm upgrade --to=4.14.31
+oc adm upgrade --to=4.14.33
 sleep 5
 oc -n openshift-config patch cm admin-acks --patch '{"data":{"ack-4.13-kube-1.27-api-removals-in-4.14":"true"}}' --type=merge

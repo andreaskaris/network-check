@@ -29,7 +29,7 @@ sleep 120
 oc rollout status daemonset -n openshift-ovn-kubernetes ovnkube-node
 oc rollout status daemonset -n openshift-ovn-kubernetes ovnkube-master
 
-# Scale nodes to 50
+# Scale nodes to 20 per machineset
 scale=20
 for ms in $(oc get machineset -n openshift-machine-api -o name); do oc scale $ms -n openshift-machine-api --replicas=${scale}; done
 for ms in $(oc get machineset -n openshift-machine-api -o name); do echo "Waiting for $ms"; oc wait $ms --timeout=20m --for=jsonpath='{.status.readyReplicas}'=20 -n openshift-machine-api; done

@@ -25,12 +25,25 @@ ovnk_inspect() {
     done
 }
 
+network_operator_inspect() {
+    mkdir -p network_operator_inspects
+    while true; do
+        oc adm inspect ns/openshift-network-operator --dest-dir=network_operator_inspects/$(date +%Y%m%d%H%M) --since=5m
+        sleep 120
+    done
+}
+
 # trap 'exit_trap' SIGINT
 
 echo ====================
-echo "Running ovnk inspects every 3 minutes and storing them in ovnk-inspects"
+echo "Running ovnk inspects every 2 minutes and storing them in ovnk-inspects"
 echo ====================
 ovnk_inspect &
+
+echo ====================
+echo "Running network operator inspects every 2 minutes and storing them in ovnk-inspects"
+echo ====================
+network_operator_inspect &
 
 echo ====================
 echo "Monitoring components in a loop"

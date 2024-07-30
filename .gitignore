@@ -1,3 +1,6 @@
 ovnk-inspects*
+network-operator-inspects*
 *.swp
 out.txt
+must-gather*
+sosreports*

@@ -30,8 +30,9 @@ oc rollout status daemonset -n openshift-ovn-kubernetes ovnkube-node
 oc rollout status daemonset -n openshift-ovn-kubernetes ovnkube-master
 
 # Scale nodes to 50
-for ms in $(oc get machineset -n openshift-machine-api -o name); do oc scale $ms -n openshift-machine-api --replicas=50; done
-for ms in $(oc get machineset -n openshift-machine-api -o name); do echo "Waiting for $ms"; oc wait $ms --timeout=20m --for=jsonpath='{.status.readyReplicas}'=50 -n openshift-machine-api; done
+scale=20
+for ms in $(oc get machineset -n openshift-machine-api -o name); do oc scale $ms -n openshift-machine-api --replicas=${scale}; done
+for ms in $(oc get machineset -n openshift-machine-api -o name); do echo "Waiting for $ms"; oc wait $ms --timeout=20m --for=jsonpath='{.status.readyReplicas}'=20 -n openshift-machine-api; done
 
 # Start monitoring
 oc new-project network-check

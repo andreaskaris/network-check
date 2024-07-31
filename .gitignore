@@ -1,5 +1,5 @@
 ovnk-inspects*
-network-operator-inspects*
+network_operator_inspects*
 *.swp
 out.txt
 must-gather*
